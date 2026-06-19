@@ -5,7 +5,7 @@ import { getEmbedding, extractSkills } from "../agents/client";
 
 dotenv.config();
 
-const PROM_URL = process.env.PROM_SEATS_API_URL || "http://localhost:4003";
+const PROM_URL = process.env.PROM_SEATS_API_URL || `http://localhost:${process.env.PORT || 3000}`;
 
 function buildSeatTextForEmbedding(seat: any, parsedSkills: string[]): string {
   const parts: string[] = [];

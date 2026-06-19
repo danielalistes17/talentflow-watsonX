@@ -5,8 +5,9 @@ import { getEmbedding } from "../agents/client";
 
 dotenv.config();
 
-const W3_PROFILE_URL = process.env.W3_PROFILE_API_URL || "http://localhost:4001";
-const W3_CV_URL = process.env.W3_CV_API_URL || "http://localhost:4002";
+const SELF = `http://localhost:${process.env.PORT || 3000}`;
+const W3_PROFILE_URL = process.env.W3_PROFILE_API_URL || SELF;
+const W3_CV_URL = process.env.W3_CV_API_URL || SELF;
 
 function buildEmployeeTextForEmbedding(profile: any, cv: any): string {
   const parts: string[] = [];

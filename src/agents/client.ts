@@ -3,10 +3,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const EMBEDDING_URL = process.env.IBM_CA_EMBEDDING_AGENT_URL || "http://localhost:4004/embed";
-const SKILL_EXTRACTION_URL = process.env.IBM_CA_SKILL_EXTRACTION_AGENT_URL || "http://localhost:4004/extract-skills";
-const EXPLANATION_URL = process.env.IBM_CA_EXPLANATION_AGENT_URL || "http://localhost:4004/explain";
-const PROFORMA_CLASSIFIER_URL = process.env.IBM_CA_PROFORMA_CLASSIFIER_AGENT_URL || "http://localhost:4004/classify-proforma";
+const BASE = `http://localhost:${process.env.PORT || 3000}`;
+const EMBEDDING_URL = process.env.IBM_CA_EMBEDDING_AGENT_URL || `${BASE}/embed`;
+const SKILL_EXTRACTION_URL = process.env.IBM_CA_SKILL_EXTRACTION_AGENT_URL || `${BASE}/extract-skills`;
+const EXPLANATION_URL = process.env.IBM_CA_EXPLANATION_AGENT_URL || `${BASE}/explain`;
+const PROFORMA_CLASSIFIER_URL = process.env.IBM_CA_PROFORMA_CLASSIFIER_AGENT_URL || `${BASE}/classify-proforma`;
 
 export interface EmbeddingResponse {
   embedding: number[];
