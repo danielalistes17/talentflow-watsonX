@@ -7,8 +7,8 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/src/server.js",
+    "build": "npx prisma generate",
+    "start": "tsx src/server.ts",
     "dev": "tsx watch src/server.ts",
     "mock:w3-profile": "tsx mocks/w3-profile-api.ts",
     "mock:w3-cv": "tsx mocks/w3-cv-api.ts",
