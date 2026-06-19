@@ -1,0 +1,254 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [vector]
+}
+
+model Employee {
+  serial                 String   @id
+  name                   String
+  email                  String   @unique
+  slack_handle           String?
+  phone_mobile           String?
+  phone_office           String?
+  preferred_contact      String?
+  primary_language       String   @default("English")
+  work_location_code     String?
+  campus_id              String?
+  address_street         String?
+  address_city           String?
+  address_country        String?
+  address_building       String?
+  address_floor          String?
+  on_bench               Boolean  @default(false)
+  availability_date      DateTime?
+  business_unit          String?
+  practice               String?
+  department_name        String?
+  department_code        String?
+  org_code               String?
+  division_code          String?
+  cost_center            String?
+  organization_hierarchy String?
+  people_manager_serial  String?
+  country_manager_serial String?
+  peers_count            Int      @default(0)
+
+  cv_overview    String?
+  cv_key_skills  Json?
+  cv_language    String?
+  cv_updated_at  DateTime?
+
+  skill_embedding Unsupported("vector(1536)")?
+
+  credentials   EmployeeCredential[]
+  roles         EmployeeRole[]
+  ibm_assignments CvIbmAssignment[]
+  work_experience CvWorkExperience[]
+  languages     CvLanguage[]
+  education     CvEducation[]
+  industry_experience CvIndustryExperience[]
+  applications  Application[]
+
+  password_hash String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("employees")
+}
+
+model EmployeeCredential {
+  id              Int     @id @default(autoincrement())
+  employee_serial String
+  name            String
+  issuer          String?
+  level           String?
+  type            String?
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("employee_credentials")
+}
+
+model EmployeeRole {
+  id               Int      @id @default(autoincrement())
+  employee_serial  String
+  role_title       String
+  role_description String?
+  specialties      String[]
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("employee_roles")
+}
+
+model CvIbmAssignment {
+  id              Int       @id @default(autoincrement())
+  employee_serial String
+  role_title      String
+  client_name     String?
+  location        String?
+  date_from       DateTime?
+  date_to         DateTime?
+  description     String?
+  contribution    String[]
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("cv_ibm_assignments")
+}
+
+model CvWorkExperience {
+  id              Int       @id @default(autoincrement())
+  employee_serial String
+  role_title      String
+  company_name    String?
+  location        String?
+  date_from       DateTime?
+  date_to         DateTime?
+  description     String?
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("cv_work_experience")
+}
+
+model CvLanguage {
+  id                  Int    @id @default(autoincrement())
+  employee_serial     String
+  language            String
+  spoken_proficiency  String
+  written_proficiency String?
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("cv_languages")
+}
+
+model CvEducation {
+  id              Int    @id @default(autoincrement())
+  employee_serial String
+  degree_title    String
+  institution     String?
+  country         String?
+  graduation_year Int?
+  specialization  String?
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("cv_education")
+}
+
+model CvIndustryExperience {
+  id              Int    @id @default(autoincrement())
+  employee_serial String
+  industry        String
+  proficiency     String
+
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@map("cv_industry_experience")
+}
+
+model Project {
+  id                           Int      @id @default(autoincrement())
+  seat_id                      String   @unique
+  title                        String
+  status                       String   @default("open")
+  candidate_tracking_status    String   @default("Actively searching")
+  fulfillment_risk             String?
+  professionals_in_play        Int      @default(0)
+  positions_required           Int      @default(1)
+  positions_filled             Int      @default(0)
+  start_date                   DateTime?
+  end_date                     DateTime?
+  client_name                  String?
+  client_confidential          Boolean  @default(false)
+  project_name                 String?
+  project_type                 String?
+  project_description          String?
+  industry                     String?
+  sector                       String?
+  contract_type                String?
+  contract_owner               String?
+  service_line                 String?
+  service                      String?
+  service_area                 String?
+  required_skills              String?
+  nice_to_have_skills          String?
+  required_skills_parsed       Json?
+  requested_band_low           String?
+  requested_band_high          String?
+  requested_languages          String[]
+  remote_working               Boolean  @default(false)
+  needed_on_site               Boolean  @default(false)
+  work_location_country        String?
+  work_location_city           String?
+  work_location_market         String?
+  work_location_geo            String?
+  hours_per_week               Float?
+  citizenship_or_residency_required Boolean @default(false)
+  pay_travel_and_lodging       Boolean  @default(false)
+  primary_location_overlapping_hours String?
+  min_overlapping_hours        Float?
+  security_clearance           String?
+  gic_provider_country         String?
+  gic_delivery_organization    String?
+  global_delivery_center       String?
+  cloned_from                  String?
+  owner_serial                 String?
+  project_contact_serial       String?
+  gic_fulfillment_manager_serial String?
+  gic_project_manager_serial   String?
+  additional_comments          String?
+  created_at                   DateTime @default(now())
+  submitted_at                 DateTime?
+  last_modified_at             DateTime?
+  last_modified_by             String?
+
+  skill_embedding Unsupported("vector(1536)")?
+
+  applications Application[]
+
+  @@map("projects")
+}
+
+enum ApplicationStatus {
+  applied
+  shortlisted
+  selected
+  rejected
+}
+
+enum ProformaRisk {
+  none
+  low
+  medium
+  high
+}
+
+model Application {
+  id                Int               @id @default(autoincrement())
+  project_seat_id   String
+  employee_serial   String
+  status            ApplicationStatus @default(applied)
+  match_score       Float?
+  match_explanation String?
+  skills_matched    String[]
+  skills_missing    String[]
+  proforma_risk     ProformaRisk      @default(none)
+  proforma_signals  String[]
+  applied_at        DateTime          @default(now())
+
+  project  Project  @relation(fields: [project_seat_id], references: [seat_id], onDelete: Cascade)
+  employee Employee @relation(fields: [employee_serial], references: [serial], onDelete: Cascade)
+
+  @@unique([project_seat_id, employee_serial])
+  @@map("applications")
+}
